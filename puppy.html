@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puppy Food Delivery</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#fff5e6;
+}
+
+/* HEADER */
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 40px;
+background:linear-gradient(45deg,#ff5200,#ff7b00);
+color:white;
+position:sticky;
+top:0;
+z-index:999;
+box-shadow:0 2px 10px rgba(0,0,0,0.2);
+}
+
+.logo{
+font-size:35px;
+font-weight:bold;
+}
+
+.nav-btns button{
+padding:10px 20px;
+margin-left:10px;
+border:none;
+border-radius: 30px;
+cursor:pointer;
+font-weight:bold;
+transition:3s;
+}
+
+.signin{
+    background: #ff5200;
+    color: white;
+}
+
+.nav-btns button:hover{
+transform:scale(1.08);
+}
+
+.profile-icon{
+width:50px;
+height:50px;
+border-radius:50%;
+object-fit:cover;
+border:3px solid white;
+cursor:pointer;
+}
+
+/* VIDEO */
+.video-section video{
+width:100%;
+height:575px;
+object-fit:cover;
+}
+
+/* CATEGORY */
+.categories{
+display:flex;
+overflow-x:auto;
+padding:20px;
+gap:15px;
+background:white;
+}
+
+.categories button{
+min-width:120px;
+padding:15px;
+border:none;
+border-radius:30px;
+background:linear-gradient(45deg,#ff5200,#ff9f00);
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+transition:0.4s;
+}
+
+.categories button:hover{
+transform:translateY(-5px) scale(1.1);
+}
+
+/* PRODUCTS */
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+padding:30px;
+}
+
+.card{
+background:white;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+transition:0.5s;
+animation:fade 1s;
+}
+
+.card:hover{
+transform:translateY(-10px);
+}
+
+.card img{
+width:100%;
+height:200px;
+object-fit:cover;
+}
+
+.card h3{
+padding:10px;
+}
+
+.card p{
+padding:0 10px;
+font-weight:bold;
+color:#ff5200;
+}
+
+.cart-btn{
+margin:10px;
+padding:12px;
+width:90%;
+border:none;
+background:#ff5200;
+color:white;
+font-size:16px;
+border-radius:25px;
+cursor:pointer;
+transition:0.4s;
+}
+
+.cart-btn:hover{
+background:#ff7b00;
+transform:scale(1.05);
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+/* MODAL */
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+.form-box{
+background:white;
+padding:25px;
+border-radius:15px;
+width:350px;
+}
+
+.form-box h2{
+margin-bottom:15px;
+}
+
+.form-box input{
+width:100%;
+padding:10px;
+margin:8px 0;
+}
+
+.form-box button{
+width:100%;
+padding:10px;
+background:#ff5200;
+color:white;
+border:none;
+margin-top:10px;
+cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div class="logo"> Spicy Foods</div>
+<div class="nav-btns">
+<button onclick="openSignin()">Sign In</button>
+<button onclick="openLogin()">Login</button>
+<img id="profilePic" class="profile-icon"
+src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+</div>
+</div>
+<br>
+<!-- VIDEO -->
+<div class="video-section">
+<video autoplay muted loop>
+<source src="biry.mp4" type="video/mp4">
+</video>
+</div>
+
+<!-- CATEGORIES -->
+<div class="categories" id="categories"></div>
+
+<!-- PRODUCTS -->
+<div class="products" id="products"></div>
+
+<!-- SIGNIN -->
+<div class="modal" id="signinModal">
+<div class="form-box">
+<h2>Sign In</h2>
+
+<input type="text" id="sname" placeholder="Name">
+<input type="file" id="spic">
+<input type="text" id="sphone" placeholder="Phone Number">
+
+<button onclick="generateOTP()">Generate OTP</button>
+
+<input type="text" id="sotp" placeholder="Enter OTP">
+
+<button onclick="signup()">Sign In</button>
+</div>
+</div>
+
+<!-- LOGIN -->
+<div class="modal" id="loginModal">
+<div class="form-box">
+<h2>Login</h2>
+
+<input type="text" id="lphone" placeholder="Phone Number">
+
+<button onclick="generateLoginOTP()">Generate OTP</button>
+
+<input type="text" id="lotp" placeholder="Enter OTP">
+
+<button onclick="login()">Login</button>
+</div>
+</div>
+
+<script>
+
+let otp="";
+let loginOtp="";
+
+function openSignin(){
+document.getElementById("signinModal").style.display="flex";
+}
+
+function openLogin(){
+document.getElementById("loginModal").style.display="flex";
+}
+
+function generateOTP(){
+otp=Math.floor(1000+Math.random()*9000);
+alert("OTP: "+otp);
+}
+
+function signup(){
+
+let name=document.getElementById("sname").value;
+let phone=document.getElementById("sphone").value;
+let userOtp=document.getElementById("sotp").value;
+let file=document.getElementById("spic").files[0];
+
+if(userOtp!=otp){
+alert("Invalid OTP");
+return;
+}
+
+let reader=new FileReader();
+
+reader.onload=function(e){
+
+let user={
+name:name,
+phone:phone,
+pic:e.target.result
+};
+
+localStorage.setItem("user",JSON.stringify(user));
+
+alert("Signup Successful");
+
+document.getElementById("signinModal").style.display="none";
+};
+
+reader.readAsDataURL(file);
+}
+
+function generateLoginOTP(){
+loginOtp=Math.floor(1000+Math.random()*9000);
+alert("OTP: "+loginOtp);
+}
+
+function login(){
+
+let phone=document.getElementById("lphone").value;
+let entered=document.getElementById("lotp").value;
+
+let user=JSON.parse(localStorage.getItem("user"));
+
+if(!user){
+alert("No user found");
+return;
+}
+
+if(phone==user.phone && entered==loginOtp){
+
+document.getElementById("profilePic").src=user.pic;
+
+alert("Welcome "+user.name);
+
+document.getElementById("loginModal").style.display="none";
+
+}else{
+alert("Invalid Login");
+}
+}
+
+const categories=[
+"All","Biryani","Pizza","Burger","Dosa",
+"Idli","Cake","Ice Cream","Coffee","Tea",
+"Noodles","Pasta","Sandwich","Juice","Rolls",
+"Fried Rice","Chicken","Paneer","Sweets","Momos"
+];
+
+const items=[
+{cat:"Biryani",name:"Chicken Biryani",price:250,img:"https://tse1.mm.bing.net/th/id/OIP.fpZH5oPD42wphiwsJBaHFQHaFC?pid=Api&h=220&P=0"},
+{cat:"Pizza",name:"Cheese Pizza",price:299,img:"https://tse4.mm.bing.net/th/id/OIP.blYR1bUE21AHCfK1-O0MvAHaEJ?pid=Api&h=220&P=0"},
+{cat:"Burger",name:"Burger",price:149,img:"https://tse1.mm.bing.net/th/id/OIP.nPRrwkpBOVqil2_FclIGrQHaHa?pid=Api&h=220&P=0"},
+{cat:"Dosa",name:"Masala Dosa",price:120,img:"https://tse2.mm.bing.net/th/id/OIP.6Nx_C1m4YCujBiHe48YpHAHaE8?pid=Api&h=220&P=0"},
+{cat:"Ice Cream",name:"Vanilla Ice Cream",price:99,img:"https://tse2.mm.bing.net/th/id/OIP.5zpvRONCi2OWVSv4FWfFtwHaE8?pid=Api&h=220&P=0"},
+{cat:"Coffee",name:"Cold Coffee",price:120,img:"https://tse2.mm.bing.net/th/id/OIP._amtVrnWIHD-wQXNk2kxKQHaLH?pid=Api&h=220&P=0"},
+{cat:"Tea",name:"Tea",price:50,img:"https://tse1.mm.bing.net/th/id/OIP.Ca3gdtr_8gNCGI-NPoXS9AHaE8?pid=Api&h=220&P=0"},
+{cat:"Cake",name:"Chocolate Cake",price:300,img:"https://tse3.mm.bing.net/th/id/OIP.nVmhSvaTguC44w9VBRlixAHaE8?pid=Api&h=220&P=0"},
+{cat:"Noodles",name:"Veg Noodles",price:180,img:"https://www.mygingergarlickitchen.com/wp-content/uploads/2017/11/veg-chezwan-noodles-recipe-9.jpg"},
+{cat:"Momos",name:"Momos",price:150,img:"https://tse1.mm.bing.net/th/id/OIP.Upyi24hjo2F1278-FzSj1AHaEJ?pid=Api&h=220&P=0"}
+];
+
+const catDiv=document.getElementById("categories");
+
+categories.forEach(cat=>{
+let btn=document.createElement("button");
+btn.innerHTML=cat;
+btn.onclick=()=>filterItems(cat);
+catDiv.appendChild(btn);
+});
+
+function displayItems(arr){
+
+let html="";
+
+arr.forEach(item=>{
+
+html+=`
+<div class="card">
+<img src="${item.img}">
+<h3>${item.name}</h3>
+<p>₹${item.price}</p>
+<button class="cart-btn">🛒 Add To Cart</button>
+</div>
+`;
+});
+
+document.getElementById("products").innerHTML=html;
+}
+
+function filterItems(cat){
+
+if(cat==="All"){
+displayItems(items);
+}else{
+displayItems(items.filter(x=>x.cat===cat));
+}
+}
+
+displayItems(items);
+
+</script>
+
+</body>
+</html>
